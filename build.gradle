@@ -1,0 +1,54 @@
+plugins {
+    id 'org.jetbrains.kotlin.js' version '1.3.50'
+}
+
+group 'spookyGhost'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-js"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-js"
+}
+
+
+kotlin.target.nodejs {
+}
+compileKotlinJs {
+    kotlinOptions.moduleKind = "commonjs"
+}
+apply plugin: 'kotlin-dce-js'
+
+tasks.register("copyScripts",Copy){
+    from(file("$buildDir/js/packages/spookyScripts/kotlin/spookyScripts.js"))
+    into(file("A:/mapping/MediocreMapper-WindowsNoEditor/MediocreMapper/scripts/spookyScripts"))
+    filter{
+        String line -> line.replaceAll("}\\(module.exports, require\\('kotlin'\\)\\)\\);",
+                "}\\(module.exports, require\\('./kotlin'\\)\\)\\);")
+    }
+    from(file("$buildDir/js/packages/spookyScripts/kotlin/spookyScripts.meta.js"))
+    into(file("A:/mapping/MediocreMapper-WindowsNoEditor/MediocreMapper/scripts/spookyScripts"))
+}
+
+tasks.register("createReleaseZip",Copy){
+    from(file("$buildDir/js/packages/spookyScripts/kotlin/spookyScripts.js"))
+    into(file("$buildDir/release/spookyLibrary"))
+    from(file("$buildDir/js/packages/spookyScripts/kotlin/spookyScripts.meta.js"))
+    into(file("$buildDir/release/spookyLibrary"))
+    from(file("$buildDir/js/node_modules/kotlin/kotlin.js"))
+    into(file("$buildDir/release/spookyLibrary"))
+}
+tasks.register("copyExampleScripts",Copy){
+    from("$rootDir/exampleScripts")
+    include("*.js")
+    into("$buildDir/release")
+}
+
+build.dependsOn copyScripts
+build.dependsOn createReleaseZip
+createReleaseZip.dependsOn(copyExampleScripts)
+
+
