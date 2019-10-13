@@ -1,5 +1,5 @@
 # spookyLibrary
-a Library that contains wall functions to help with mm script engine
+Library containing wall functions to help with mm script engine
 
 ## installation
 
