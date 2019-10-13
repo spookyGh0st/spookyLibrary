@@ -22,7 +22,7 @@ Everything else scales accordingly.
 
 ![1 height= 1 width](https://i.imgur.com/Uz7aIDg.png=100x100)
 
-To create a SpookyWall from a given one use use
+To create a SpookyWall from a given Wall use use
 ```
 let wall = <providedwall>
 let spookyWall = spookyLib.SpookyWall_init_za3rmp$(walls[i]);
