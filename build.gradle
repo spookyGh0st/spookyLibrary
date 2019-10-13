@@ -24,13 +24,13 @@ apply plugin: 'kotlin-dce-js'
 
 tasks.register("copyScripts",Copy){
     from(file("$buildDir/js/packages/spookyScripts/kotlin/spookyScripts.js"))
-    into(file("A:/mapping/MediocreMapper-WindowsNoEditor/MediocreMapper/scripts/spookyScripts"))
+    into(file("A:/mapping/MediocreMapper-WindowsNoEditor/MediocreMapper/scripts/spookyLibrary"))
     filter{
         String line -> line.replaceAll("}\\(module.exports, require\\('kotlin'\\)\\)\\);",
                 "}\\(module.exports, require\\('./kotlin'\\)\\)\\);")
     }
     from(file("$buildDir/js/packages/spookyScripts/kotlin/spookyScripts.meta.js"))
-    into(file("A:/mapping/MediocreMapper-WindowsNoEditor/MediocreMapper/scripts/spookyScripts"))
+    into(file("A:/mapping/MediocreMapper-WindowsNoEditor/MediocreMapper/scripts/spookyLibrary"))
 }
 
 tasks.register("createReleaseZip",Copy){
