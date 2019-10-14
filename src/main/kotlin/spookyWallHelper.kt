@@ -1,5 +1,4 @@
 import kotlin.math.PI
-import kotlin.math.cos
 import kotlin.math.sin
 
 fun getHeight(i:Int):Double{
@@ -37,6 +36,3 @@ fun wave(amount: Int):ArrayList<Double>{
     return l
 }
 
-external class data(){
-    val cursorPrecision:Double
-}

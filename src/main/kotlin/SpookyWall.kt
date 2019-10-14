@@ -84,9 +84,8 @@ data class SpookyWall(
     }
 
 
-    fun adjustToBPM(baseBPM:Double,newBPM:Double,offset:Double): SpookyWall {
-        var tempStartTime = startTime* (baseBPM / newBPM)
-        tempStartTime += offset
+    internal fun adjustToBPM(baseBPM: Double, newBPM: Double): SpookyWall {
+        val tempStartTime = startTime* (baseBPM / newBPM)
         val tempDuration = if(duration > 0)
             duration * (baseBPM / newBPM)
         else
@@ -120,21 +119,24 @@ data class SpookyWall(
     }
 
     /** splits the wall to the given amount per beat */
-    fun splitToBeat(a:Int=1): Array<SpookyWall>{
+    fun splitToBeat(): Array<SpookyWall>{
+        val a = 1/data.cursorPrecision as Double
         val total = (a*duration).toInt()
         val tempArr = arrayListOf<SpookyWall>()
         repeat(total){
             val curr = it.toDouble()
             tempArr.add(this.copy(
-                startTime = startTime + curr/a,
+                startTime = curr/a,
                 duration = 1.0/a
             ))
         }
-        return tempArr.toTypedArray()
+        val adjustedArr = tempArr.toTypedArray().adjustArrayToBpm()
+        adjustedArr.forEach { it.startTime+=startTime }
+        return adjustedArr
     }
     fun curveInWall(a:Int=1): Array<SpookyWall>{
         //todo move the amount out of here and directly use the dynamic
-        val l = splitToBeat(a)
+        val l = splitToBeat()
         val w = wave((duration*a).toInt())
         for ((index, wall) in l.withIndex()){
             wall.startHeight += height * w[index]
