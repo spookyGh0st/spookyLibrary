@@ -3,7 +3,6 @@
 import kotlin.math.abs
 import kotlin.random.Random
 
-@Suppress("MemberVisibilityCanBePrivate")
 data class SpookyWall(
     var startTime: Double,
     var duration: Double,
@@ -121,9 +120,7 @@ data class SpookyWall(
     }
 
     /** splits the wall to the given amount per beat */
-    fun splitToBeat(): Array<SpookyWall>{
-        //todo make the global var a requirement
-        val a = 1/((js("JSON.stringify(spookyData.cursorPrecision)") as String).toDoubleOrNull()?:1.0)
+    fun splitToBeat(a:Int=1): Array<SpookyWall>{
         val total = (a*duration).toInt()
         val tempArr = arrayListOf<SpookyWall>()
         repeat(total){
@@ -135,10 +132,9 @@ data class SpookyWall(
         }
         return tempArr.toTypedArray()
     }
-    fun curveInWall(): Array<SpookyWall>{
+    fun curveInWall(a:Int=1): Array<SpookyWall>{
         //todo move the amount out of here and directly use the dynamic
-        val a = 1/((js("JSON.stringify(spookyData.cursorPrecision)") as String).toDoubleOrNull()?:1.0)
-        val l = splitToBeat()
+        val l = splitToBeat(a)
         val w = wave((duration*a).toInt())
         for ((index, wall) in l.withIndex()){
             wall.startHeight += height * w[index]
