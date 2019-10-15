@@ -6,23 +6,22 @@
 // This is our function declaration, always have to start with EXACTLY this, or whatever it may be in the future.
 
 
+
 module.exports.run = function (cursor, notes, events, walls, save, global, data)
 {
+
 	// Always gotta have this output variable so MM can actually do something
 	var output = {};
-	output.message= "generating Curve";
+	output.message= "grounded Walls";
 
 	const myLib = require("./spookyLibrary/spookyScripts");
 	myLib.data = data;
+
 	// Loop through our notes and edit them all!
-	let finalWalls = [];
 	try{
 		for (let i = 0; i < walls.length; i++) {
 			let spookyWall = myLib.SpookyWall_init_za3rmp$(walls[i]);
-			let a = spookyWall.curveInWall_za3lpa$(1/JSON.stringify(data.cursorPrecision));
-			for(let j =0; j<a.length;j++){
-				finalWalls.push(a[j].toWall())
-			}
+			walls[i]=spookyWall.extendY_14dthe$(0.0).toWall()
 		}
 	}catch (e) {
 		output.message = e.message
@@ -31,7 +30,7 @@ module.exports.run = function (cursor, notes, events, walls, save, global, data)
 		// Now we send all our data to the outputs
 	output.notes = notes;
 	output.events = events;
-	output.walls = finalWalls;
+	output.walls = walls;
 	output.select = true;
 
 	// and we can return here

@@ -93,7 +93,14 @@ data class SpookyWall(
         return this.copy(startTime = tempStartTime, duration = tempDuration)
     }
     fun fuckUp() =
-        SpookyWall(ra(startRow), ra(duration), ra(width), ra(height), ra(startHeight), ra(startTime))
+        SpookyWall(
+            startTime = ra(startTime),
+            duration = ra(duration),
+            startHeight = ra(startHeight),
+            height = ra(height),
+            startRow = ra(startRow),
+            width = ra(width)
+        )
 
     private fun ra(i:Double) = i+ Random.nextDouble(-0.2 ,0.2)
     fun fast() = this.copy(duration= -2.0)
@@ -135,7 +142,7 @@ data class SpookyWall(
         return adjustedArr
     }
     fun curveInWall(a:Int=1): Array<SpookyWall>{
-        //todo move the amount out of here and directly use the dynamic
+        //todo move the amount out of here and directly use the dynamic add to DOCU
         val l = splitToBeat()
         val w = wave((duration*a).toInt())
         for ((index, wall) in l.withIndex()){
@@ -143,6 +150,32 @@ data class SpookyWall(
             wall.height=(w[index+1]-w[index])*height
         }
         return l
+    }
+
+    fun curse(): Array<SpookyWall>{
+        val tempArr = arrayListOf<SpookyWall>()
+        var lines = curseWand(duration,height)
+        for (l in lines){
+            tempArr.add(this.copy(
+                startTime = startTime+ l.p1.x,
+                duration = l.p2.x-l.p1.x,
+                startHeight = startHeight+l.p1.y,
+                height = l.p2.y - l.p1.y,
+                width = 0.0
+            ))
+        }
+        lines = curseWand(duration,height)
+        for (l in lines){
+            tempArr.add(this.copy(
+                startTime = startTime+ l.p1.x,
+                duration = l.p2.x-l.p1.x,
+                startHeight = startHeight+l.p1.y,
+                height = l.p2.y - l.p1.y,
+                width = 0.0,
+                startRow = startRow+width
+            ))
+        }
+        return tempArr.toTypedArray()
     }
 
     fun outline(): Array<SpookyWall> {
@@ -244,3 +277,9 @@ data class SpookyWall(
     )
 }
 
+fun main(){
+    val w = SpookyWall(0.0, 4.0,0.0,2.0,1.0,1.0)
+    val l = w.curse()
+    println(l)
+
+}

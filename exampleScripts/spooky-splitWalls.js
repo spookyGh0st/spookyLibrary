@@ -6,20 +6,23 @@
 // This is our function declaration, always have to start with EXACTLY this, or whatever it may be in the future.
 
 
-const myLib = require("./spookyLibrary/spookyScripts");
 
 module.exports.run = function (cursor, notes, events, walls, save, global, data)
 {
+
 	// Always gotta have this output variable so MM can actually do something
 	var output = {};
 	output.message= "Splitted Walls";
+
+	const myLib = require("./spookyLibrary/spookyScripts");
+	myLib.data = data;
 
 	// Loop through our notes and edit them all!
 	let finalWalls = [];
 	try{
 		for (let i = 0; i < walls.length; i++) {
 			let spookyWall = myLib.SpookyWall_init_za3rmp$(walls[i]);
-			let a = spookyWall.splitToBeat_za3lpa$(1/JSON.stringify(data.cursorPrecision));
+			let a = spookyWall.splitToBeat();
 			for(let j =0; j<a.length;j++){
 				finalWalls.push(a[j].toWall())
 			}
@@ -28,6 +31,7 @@ module.exports.run = function (cursor, notes, events, walls, save, global, data)
 		output.message = e.message
 	}
 
+	output.message = JSON.stringify(myLib.data);
 		// Now we send all our data to the outputs
 	output.notes = notes;
 	output.events = events;
