@@ -92,6 +92,17 @@ data class SpookyWall(
             duration
         return this.copy(startTime = tempStartTime, duration = tempDuration)
     }
+
+
+
+    // stuff
+
+    fun center() = Point3d(
+        x=startRow+width/2,
+        y=startHeight+height/2,
+        z=startTime+duration/2
+    )
+
     fun fuckUp() =
         SpookyWall(
             startTime = ra(startTime),
@@ -127,7 +138,7 @@ data class SpookyWall(
 
     /** splits the wall to the given amount per beat */
     fun splitToBeat(): Array<SpookyWall>{
-        val a = 1/data.cursorPrecision as Double
+        val a = cursorPrecision()
         val total = (a*duration).toInt()
         val tempArr = arrayListOf<SpookyWall>()
         repeat(total){
@@ -150,6 +161,26 @@ data class SpookyWall(
             wall.height=(w[index+1]-w[index])*height
         }
         return l
+    }
+
+    fun randomCurveInWall(amountPerBeat:Int = 8){
+        val w = this.splitToBeat().map { it }
+        for ( wall in w){
+            val controlPoints =  arrayListOf<Point3d>()
+            for( i in 0..3){
+               TODO()
+
+            }
+
+        }
+
+    }
+
+    private fun randomPoint(): Point3d {
+        return Point3d( this.startRow+Random.nextDouble(this.width),
+            this.startHeight+Random.nextDouble(this.height),
+            this.startTime
+        )
     }
 
     fun curse(): Array<SpookyWall>{
@@ -277,9 +308,3 @@ data class SpookyWall(
     )
 }
 
-fun main(){
-    val w = SpookyWall(0.0, 4.0,0.0,2.0,1.0,1.0)
-    val l = w.curse()
-    println(l)
-
-}

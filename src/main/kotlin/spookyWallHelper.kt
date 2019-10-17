@@ -59,3 +59,8 @@ fun curseWand(PointX:Double, PointY:Double) : ArrayList<Line2d>{
     return list
 }
 
+fun cursorPrecision() =
+    (1.0/data.cursorPrecision as Double).toInt()
+
+fun BPMmultiplier() =
+    1/data.currentBPM as Double * data.BPM as Double
