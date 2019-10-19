@@ -62,5 +62,38 @@ fun curseWand(PointX:Double, PointY:Double) : ArrayList<Line2d>{
 fun cursorPrecision() =
     (1.0/data.cursorPrecision as Double).toInt()
 
+fun adjust_getNumber(): Double =
+    if(data.strobeInterval as Double == 0.5)
+        - data.strobeDuration as Double
+    else
+        data.strobeDuration as Double
+
+
+
 fun BPMmultiplier() =
     1/data.currentBPM as Double * data.BPM as Double
+
+fun buildBezier(p0:Point3d,p1:Point3d,p2:Point3d,p3:Point3d, amount: Int): ArrayList<SpookyWall> {
+    val list = arrayListOf<SpookyWall>()
+    repeat(amount) {
+        val currentPoint = quadraticBezier(p0, p1, p2, p3, it.toDouble() / amount)
+        val nextPoint = quadraticBezier(p0, p1, p2, p3, (it + 1.0) / amount)
+        val startRow = currentPoint.x
+        val startHeight = currentPoint.y
+        val startTime = currentPoint.z
+        val width = nextPoint.x - currentPoint.x
+        val height = nextPoint.y - currentPoint.y
+        val duration = nextPoint.z - currentPoint.z
+        list.add(
+            SpookyWall(
+                startTime = startTime,
+                duration = duration,
+                startHeight = startHeight,
+                height = height,
+                startRow = startRow,
+                width = width
+            )
+        )
+    }
+    return list
+}

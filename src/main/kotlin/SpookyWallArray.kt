@@ -75,7 +75,7 @@ fun Array<SpookyWall>.defaultCurve():Array<SpookyWall>{
     return list.toTypedArray()
 }
 
-private fun quadraticBezier(p0: Point3d, p1: Point3d, p2: Point3d, p3: Point3d, t:Double): Point3d {
+fun quadraticBezier(p0: Point3d, p1: Point3d, p2: Point3d, p3: Point3d, t:Double): Point3d {
     val x =(1-t).pow(3)*p0.x +
             (1-t).pow(2)*3*t*p1.x +
             (1-t)*3*t*t*p2.x +

@@ -15,7 +15,7 @@ data class SpookyWall(
     /**Changes the MyObstacle Type to an Object Type */
     fun toWall(): dynamic {
         return jsObject {
-            _time = startTime
+            _time = calculateStartTime()
             _duration = calculateDuration()
             _type = type()
             _lineIndex = calculateLineIndex()
@@ -29,9 +29,15 @@ data class SpookyWall(
         return o
     }
 
+    private fun calculateStartTime():Double{
+        return if(duration>0)
+            this.startTime
+        else
+            this.startTime+duration
+    }
+
     private fun calculateDuration(): Double{
-        val tempDuration = if (duration <0.0001 && duration >-0.0001) 0.0001 else duration
-        return tempDuration.coerceAtLeast(-3.0)
+        return abs(duration).coerceAtLeast(0.0001)
     }
 
     /**returns th Object value of the width*/
@@ -52,7 +58,9 @@ data class SpookyWall(
 
     /**Return the Object value of the startRow*/
     private fun calculateLineIndex():Int {
-        val i = startRow +2
+        var i = startRow +2
+        if(width<0)
+            i+=width
         return if( i >= 0.0)
             (i* 1000 +1000).toInt()
         else
@@ -163,23 +171,53 @@ data class SpookyWall(
         return l
     }
 
-    fun randomCurveInWall(amountPerBeat:Int = 8){
+    fun randomCurveInWall(amountPerBeat:Int = 8): Array<SpookyWall> {
         val w = this.splitToBeat().map { it }
+        val finalWalls = arrayListOf<SpookyWall>()
+        var last: Point3d? = null
+        var lastContr: Point3d? = null
+
         for ( wall in w){
-            val controlPoints =  arrayListOf<Point3d>()
-            for( i in 0..3){
-               TODO()
 
-            }
+            val p0 = (last?:wall.randomTimedPoint(0))
+            val p1: Point3d
+            p1 = if(lastContr == null)
+                wall.randomTimedPoint(1)
+            else
+                p0.mirrorPointToThis(lastContr)
+            val p2 = wall.randomTimedPoint(2)
+            lastContr = p2
 
+            val p3 = wall.randomTimedPoint(3)
+            last = p3
+
+            finalWalls.addAll(buildBezier(p0,p1,p2,p3,amountPerBeat))
         }
-
+        return finalWalls.toTypedArray()
     }
 
+    fun randomWalls(amount:Int = cursorPrecision()): Array<SpookyWall> {
+        val l = arrayListOf<SpookyWall>()
+        repeat(amount){
+            val p1 = this.randomPoint()
+            val p2 = this.randomPoint()
+            l.add(p1.buildWall(p2))
+        }
+        return l.toTypedArray()
+    }
+
+    private fun randomTimedPoint(t: Int, max:Int=3): Point3d {
+        return Point3d(
+            x = this.startRow+Random.nextDouble(this.width),
+            y = this.startHeight+Random.nextDouble(this.height),
+            z = this.startTime+ t/max.toDouble()*duration
+        )
+    }
     private fun randomPoint(): Point3d {
-        return Point3d( this.startRow+Random.nextDouble(this.width),
-            this.startHeight+Random.nextDouble(this.height),
-            this.startTime
+        return Point3d(
+            x = this.startRow+Random.nextDouble(this.width),
+            y = this.startHeight+Random.nextDouble(this.height),
+            z = this.startTime+ Random.nextDouble(this.duration)
         )
     }
 
@@ -308,3 +346,8 @@ data class SpookyWall(
     )
 }
 
+
+fun main(){
+    val a = SpookyWall(0.0,2.0,1.0,1.0,0.0,2.0)
+    println(a.randomWalls(4))
+}
