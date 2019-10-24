@@ -10,6 +10,27 @@ fun Array<SpookyWall>.adjustArrayToBpm(): Array<SpookyWall> {
         .toTypedArray()
 }
 
+fun Array<SpookyWall>.line(amountPerLine:Int = cursorPrecision()): Array<SpookyWall>{
+    val points = this.map { it.center() }
+        .windowed(2,1)
+    val w = arrayListOf<SpookyWall>()
+
+    for(p in  points){
+        val l = arrayListOf<Point3d>()
+        for(i in 0 until amountPerLine) {
+            val tempP = Point3d(
+                x = p[0].x + (i/amountPerLine) * (p[1].x-p[0].x),
+                y = p[0].y + (i/amountPerLine) * (p[1].y-p[0].y),
+                z = p[0].z + (i/amountPerLine) * (p[1].z-p[0].z))
+            l.add(tempP)
+            for(j in 0 until l.size){
+                w.add(l[j].buildWall(l[j+1]))
+            }
+        }
+    }
+    return w.toTypedArray()
+}
+
 fun Array<SpookyWall>.curve():Array<SpookyWall>{
     val points =
         this.map{ it.center() }
@@ -18,9 +39,6 @@ fun Array<SpookyWall>.curve():Array<SpookyWall>{
 
     val list = arrayListOf<SpookyWall>()
     for(p in points){
-        if(p[3].z<p[0].z){
-            throw Exception("You have something wrong with you curve")
-        }
         repeat(amount){
             val currentPoint = quadraticBezier(p[0], p[1], p[2], p[3], it.toDouble() / amount)
             val nextPoint = quadraticBezier(p[0], p[1], p[2], p[3], (it + 1.0) / amount)
@@ -42,6 +60,20 @@ fun Array<SpookyWall>.curve():Array<SpookyWall>{
     }
     return list.toTypedArray()
 }
+
+fun Array<SpookyWall>.line(): Array<SpookyWall>{
+    val points =
+        this.map{ it.center() }
+            .windowed(2,1,false)
+    val amount = cursorPrecision()
+    val list = arrayListOf<SpookyWall>()
+    for( p in points) {
+        list.addAll(line(p[0],p[1],amount))
+    }
+    return list.toTypedArray()
+}
+
+
 fun Array<SpookyWall>.defaultCurve():Array<SpookyWall>{
     val points =
         this.map{ it.center() }
@@ -90,4 +122,5 @@ fun quadraticBezier(p0: Point3d, p1: Point3d, p2: Point3d, p3: Point3d, t:Double
             t*t*t*p3.z
     return Point3d(x, y, z)
 }
+
 
