@@ -9,6 +9,13 @@ download the latest [release](https://github.com/spookyGh0st/spookyLibrary/relea
 
 ## Usage
 
+#### adjust sublibrary
+
+- Set the values using the strobe Duration! 
+- to set the value negativ, set strobe Interval to 1/2
+
+### working with it
+
 import the library into your script with
 
 ```const spookyLib = require("./spookyLibrary/spookyScripts");```
