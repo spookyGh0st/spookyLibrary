@@ -346,8 +346,10 @@ data class SpookyWall(
     )
 }
 
+fun createSpookyWall(startTime:Double,duration: Double,startHeight:Double,height: Double,startRow: Double,width: Double) = SpookyWall(startTime, duration, startHeight, height, startRow, width)
 
 fun main(){
     val a = SpookyWall(0.0,2.0,1.0,1.0,0.0,2.0)
     println(a.randomWalls(4))
 }
+

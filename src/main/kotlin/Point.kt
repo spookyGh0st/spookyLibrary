@@ -2,7 +2,7 @@ data class Point2d(val x:Double, val y:Double)
 
 data class Line2d(val p1:Point2d,val p2: Point2d)
 
-data class Point3d(val x:Double, val y:Double, val z:Double){
+data class Point3d(var x:Double, var y:Double, var z:Double){
 
     /**
      * mirrors the given point to this
@@ -28,6 +28,14 @@ data class Point3d(val x:Double, val y:Double, val z:Double){
             startRow = startRow,
             width = width
         )
+    }
+    fun toPoint2d() = Point2d(x,y)
+
+    operator fun plus(p:Point3d): Point3d {
+        return Point3d(x+p.x, y+p.y, z+p.z)
+    }
+    fun mul(n:Double): Point3d {
+        return  Point3d(x*n,y*n,z*n)
     }
 }
 
